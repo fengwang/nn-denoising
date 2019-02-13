@@ -55,8 +55,7 @@ def predict(image_path, prediction_path=None, log_flag=False):
     if len(image.shape) == 2:
         image = image.reshape((1, ) + image.shape)
     number, row, col = image.shape
-    image = (image - np.amin(image)) / (
-        np.amax(image) - np.amin(image) + 1.0e-10)
+    image = norm( image )
     make_log('experimental data normalized', log_flag)
 
     # symmetric padding of experimental data
@@ -84,7 +83,7 @@ def predict(image_path, prediction_path=None, log_flag=False):
 
     prediction_result = norm(result)
     prediction_result = np.asarray(
-        prediction_result * 256 * 256, dtype='uint16')
+        prediction_result * (256 * 256 - 1), dtype='uint16')
     tifffile.imsave(prediction_path, prediction_result)
     make_log(f'unpaded data saved to {prediction_path}', log_flag)
 
