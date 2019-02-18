@@ -11,7 +11,7 @@
 
 #### fetching pre-trained model:
 
-Download `denoiser.model` from https://drive.google.com/open?id=1uD3LvmNRTc5clM9x3fkhiQ4X-cedflMc, and place it in the root of the folder
+Download `denoiser.model` from https://drive.google.com/open?id=1uD3LvmNRTc5clM9x3fkhiQ4X-cedflMc, and place it in the root of the repo
 
 #### example code:
 
