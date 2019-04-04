@@ -20,6 +20,7 @@ os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
 os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 
 from keras.models import load_model
+import keras.backend as K
 import numpy as np
 from skimage import io
 import tifffile
@@ -45,6 +46,8 @@ def unpadding( img, boarders ):
     pass
 
 
+# TODO:
+# adjust batch size according to the image size
 def predict(image_path, prediction_path=None, log_flag=False):
     prediction_path = prediction_path or (image_path + '_denoised.tif')
     make_log(
@@ -53,9 +56,11 @@ def predict(image_path, prediction_path=None, log_flag=False):
 
     # load Low Pass Filter Model
     lpf = load_model('./lpf.model')
+    lpf._make_predict_function()
     make_log('LPF model loaded', log_flag)
     # load Denoiser Model
     generator = load_model('./denoiser.model')
+    generator._make_predict_function()
     make_log('denoiser model loaded', log_flag)
 
     # load experimental data
@@ -68,13 +73,18 @@ def predict(image_path, prediction_path=None, log_flag=False):
     image = norm( image )
     make_log('experimental data normalized', log_flag)
 
+    # 512 - 2
+    lpf_batch_size, generator_batch_size = 8, 2
+    if max( row, col) > 512:
+        lpf_batch_size, generator_batch_size = 1, 1
+
     # symmetric padding of experimental data
     image = np.pad(image, ((0, 0), (128, 128), (128, 128)), 'symmetric')
     make_log('experimental data padded', log_flag)
     image = image.reshape(image.shape + (1, ))
 
     # low-pass filter process
-    proceed_image = lpf.predict(image)
+    proceed_image = lpf.predict(image, batch_size=lpf_batch_size, verbose=1)
     make_log('experimental data proceed by LPF', log_flag)
 
     # correct contrast
@@ -84,7 +94,8 @@ def predict(image_path, prediction_path=None, log_flag=False):
     make_log('LPF data contrast fixed', log_flag)
 
     # denoising process
-    prediction = generator.predict(proceed_image, batch_size=2)
+    # prediction = generator.predict(proceed_image, batch_size=2)
+    prediction = generator.predict(proceed_image, batch_size=generator_batch_size, verbose=1)
     make_log('LPF data denoised', log_flag)
 
     # unpadding
@@ -97,6 +108,7 @@ def predict(image_path, prediction_path=None, log_flag=False):
     tifffile.imsave(prediction_path, prediction_result)
     make_log(f'unpaded data saved to {prediction_path}', log_flag)
 
+    K.clear_session()
 
 if __name__ == '__main__':
     predict('./experimental.tif', log_flag=True)
