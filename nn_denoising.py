@@ -1,5 +1,5 @@
 '''
-    <nn-denoising -- denoise heavily noised TEM images>
+    <nn-denoising -- denoise heavily noised STEM images>
     Copyright (C) 2019 Feng Wang feng.wang@empa.ch
 
     This program is free software: you can redistribute it and/or modify
@@ -36,6 +36,15 @@ def make_log(log, flag):
     print('[[Pred log]]', log, f'[[{time.ctime()}]]')
 
 
+# TODO:
+def padding( img ):
+    pass
+
+# TODO:
+def unpadding( img, boarders ):
+    pass
+
+
 def predict(image_path, prediction_path=None, log_flag=False):
     prediction_path = prediction_path or (image_path + '_denoised.tif')
     make_log(
@@ -50,6 +59,7 @@ def predict(image_path, prediction_path=None, log_flag=False):
     make_log('denoiser model loaded', log_flag)
 
     # load experimental data
+    # TODO: case of other format of input
     image = np.asarray(io.imread(image_path), dtype='float32')
     make_log(f'experimental data loaded from {image_path}', log_flag)
     if len(image.shape) == 2:
@@ -90,3 +100,8 @@ def predict(image_path, prediction_path=None, log_flag=False):
 
 if __name__ == '__main__':
     predict('./experimental.tif', log_flag=True)
+    #predict('/home/feng/raid_storage/experimental_data/experimental/new_s22.tif', prediction_path='./128_new_s22_denoised.tif', log_flag=True)
+    #predict('/home/feng/raid_storage/experimental_data/experimental/s12.tif', prediction_path='./256_s12_denoised.tif', log_flag=True)
+    #predict('/home/feng/raid_storage/experimental_data/experimental/s25.tif', prediction_path='./512_s25_denoised.tif', log_flag=True)
+    #predict('/home/feng/raid_storage/experimental_data/experimental/s8.tif', prediction_path='./1024_s8_denoised.tif', log_flag=True)
+
