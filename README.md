@@ -5,9 +5,11 @@
 #### installing required packages:
 
     - keras
+    - tensorflow-gpu
     - numpy
     - scikit-image
     - tifffile
+    - flask (if using web UI)
 
 #### fetching pre-trained model:
 
@@ -21,6 +23,16 @@ predict('./experimental.tif',  log_flag=True)
 # or without log
 predict('./experimental.tif')
 ```
+
+### starting as a web service
+
+Enabling web service at a server:
+
+```bash
+python ./web.py
+```
+
+then visit `http://SERVICE-IP-ADDRESS:4567` to upload and get denoised result.
 
 ## license:
 
