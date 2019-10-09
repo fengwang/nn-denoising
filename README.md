@@ -34,7 +34,12 @@ python ./web.py
 
 then visit `http://SERVICE-IP-ADDRESS:4567` to upload and get denoised result.
 
-## license:
+### license:
 
 AGPL-3.0
+
+### Alternative model
+
+A new pre-model trained with [MCNN](https://arxiv.org/abs/1810.12183) (and GAN) is available in [MCNN-DEMO](https://github.com/fengwang/mcnn-demo/blob/master/demo/denoising/make_denoising.py).
+
 
